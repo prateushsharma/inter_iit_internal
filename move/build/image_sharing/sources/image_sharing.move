@@ -31,15 +31,26 @@ module my_addrx::image_sharing {
 
     // Removed 'public' to make it private by default
     
-   fun init_module(account: &signer) {
-        let account_addr = signer::address_of(account);
-        assert!(!exists<PlatformData>(account_addr), E_ALREADY_INITIALIZED);
+//    fun init_module(account: &signer) {
+//         let account_addr = signer::address_of(account);
+//         assert!(!exists<PlatformData>(account_addr), E_ALREADY_INITIALIZED);
         
-        move_to(account, PlatformData {
-            all_images: table::new(),
-            image_count: 0,
-        });
-    }
+//         move_to(account, PlatformData {
+//             all_images: table::new(),
+//             image_count: 0,
+//         });
+//     }
+fun init_module(account: &signer) {
+    let account_addr = signer::address_of(account);
+    // Check if PlatformData exists globally, not by account address
+    assert!(!exists<PlatformData>(@my_addrx), E_ALREADY_INITIALIZED); 
+    
+    move_to(account, PlatformData {
+        all_images: table::new(),
+        image_count: 0,
+    });
+}
+
 
     public entry fun initialize_profile(account: &signer) {
         let account_addr = signer::address_of(account);

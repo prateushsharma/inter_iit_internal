@@ -1,0 +1,15 @@
+[package]
+name = "image_sharing"
+version = "1.0.0"
+authors = []
+
+[addresses]
+my_addrx='18075abe29d945b1d3a43aa40a75f500e68517dec5daf52b249e5f5bb9c4bdd4'
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]
