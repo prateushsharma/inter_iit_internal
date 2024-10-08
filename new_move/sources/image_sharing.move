@@ -73,8 +73,8 @@ module my_addrx::image_sharing {
 
         table::add(&mut platform_data.all_images, platform_data.image_count, ImageInfo {
             owner: account_addr,
-            ipfs_hash: ipfs_hash,
-            description: description,
+            ipfs_hash,
+            description,
             likes: 0,
             tips_received: 0,
         });
@@ -109,7 +109,7 @@ module my_addrx::image_sharing {
         assert!(table::contains(&platform_data.all_images, image_id), E_IMAGE_NOT_FOUND);
         
         let image_info = table::borrow(&platform_data.all_images, image_id);
-        (image_info.owner, *&image_info.ipfs_hash, *&image_info.description, image_info.likes, image_info.tips_received)
+        (image_info.owner, image_info.ipfs_hash, image_info.description, image_info.likes, image_info.tips_received)
     }
 
     #[view]
@@ -117,6 +117,7 @@ module my_addrx::image_sharing {
         let platform_data = borrow_global<PlatformData>(@my_addrx);
         let image_count = platform_data.image_count;
         let ids = vector::empty();
+        
         let i = 0;
         while (i < image_count) {
             if (table::contains(&platform_data.all_images, i)) {
@@ -133,6 +134,7 @@ module my_addrx::image_sharing {
         let total_tips: u64 = 0;
 
         let image_count = platform_data.image_count;
+        
         let i = 0;
         while (i < image_count) {
             if (table::contains(&platform_data.all_images, i)) {
@@ -167,5 +169,25 @@ module my_addrx::image_sharing {
         };
         
         (uploaded_image_ids, total_tips)
+    }
+
+       #[view]
+    public fun get_user_uploaded_images(account: address): vector<(u64, String, String, u64, u64)> acquires PlatformData {
+        let platform_data = borrow_global<PlatformData>(@my_addrx);
+        let user_images: vector<(u64, String, String, u64, u64)> = vector::empty();
+
+        let image_count = platform_data.image_count;
+        let i = 0;
+        while (i < image_count) {
+            if (table::contains(&platform_data.all_images, i)) {
+                let image_info = table::borrow(&platform_data.all_images, i);
+                if (image_info.owner == account) {
+                    vector::push_back(&mut user_images, (i, image_info.ipfs_hash, image_info.description, image_info.likes, image_info.tips_received));
+                };  // Add semicolon here
+            };  // Add semicolon here
+            i = i + 1;
+        };
+        
+        user_images
     }
 }
